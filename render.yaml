@@ -1,0 +1,36 @@
+# Render Blueprint for TradingAgents web service.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# This file lets Render create+configure the service declaratively. We still
+# push it via the Render API below, but the same values are mirrored here for
+# transparency and future re-deploys.
+services:
+  - type: web
+    name: tradingagents
+    runtime: python
+    region: oregon
+    plan: starter
+    buildCommand: "pip install --upgrade pip && pip install . && pip install -r requirements-web.txt"
+    startCommand: "uvicorn web.app:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      # Non-secret config: NVIDIA provider + Kimi K3 model.
+      - key: TRADINGAGENTS_LLM_PROVIDER
+        value: nvidia
+      - key: TRADINGAGENTS_DEEP_THINK_LLM
+        value: moonshotai/kimi-k3
+      - key: TRADINGAGENTS_QUICK_THINK_LLM
+        value: moonshotai/kimi-k3
+      - key: TRADINGAGENTS_MAX_TOKENS
+        value: "8192"
+      - key: TRADINGAGENTS_LLM_MAX_RETRIES
+        value: "4"
+      - key: TRADINGAGENTS_OUTPUT_LANGUAGE
+        value: English
+      - key: PYTHON_VERSION
+        value: "3.12.14"
+      # Secret: set NVIDIA_API_KEY manually on Render (or via API below).
+      # We do NOT hardcode the key here.
+      - key: NVIDIA_API_KEY
+        sync: false

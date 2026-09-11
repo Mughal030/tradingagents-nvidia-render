@@ -1,0 +1,6 @@
+# Extra web-serving dependencies for the FastAPI wrapper.
+# The core TradingAgents package is installed via `pip install .`
+# from pyproject.toml; this file only adds the HTTP server layer.
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+gunicorn>=23.0.0
